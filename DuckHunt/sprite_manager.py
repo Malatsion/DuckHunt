@@ -12,13 +12,16 @@ class SpriteManager:
         self.max_clouds = 6
         self.font_main_color = (255, 255, 255)
         self.leaderboard_bg_color = (50, 50, 50)    
+        self.sky_color = (15, 175, 255) # G - 135 for cloud bg
 
         # Параметри для роботи з анімацією переходу в гру
         self.transition_active = False
         self.transition_speed = 10
         self.camera_y = 0
         self.ground_y = 0
-
+         # Параметри для роботи з анімаціями
+        self.dog_animation_timer = 0
+        self.dog_frame = 0
         self.duck_animation_timer = 0
         self.duck_frame = 0
 
@@ -30,7 +33,9 @@ class SpriteManager:
         self.load_interface() # Завантаження інтерфейсу
         self.load_cursor() # Завантаження курсора
         self.load_buttons() # Завантаження кнопок
+        self.load_dog() # Завантаження собаки
         self.load_all_ducks() # Завантаження зображень качок
+
 
         # Створення початкового набору хмар
         self.init_clouds()
@@ -51,7 +56,6 @@ class SpriteManager:
         self.crown_image = pygame.transform.scale(self.crown_image, (int(width * 0.03), int(height * 0.05)))
 
     def load_game_scene(self):
-        self.sky_color = (15, 175, 255) # G - 135 for cloud bg
         self.ground_image = pygame.image.load("DuckHunt\\Images\\ground_dh_3_aplha.png").convert_alpha()
         self.ground_image = pygame.transform.scale(self.ground_image, (self.screen.get_width(), self.screen.get_width() * 0.2))
 
@@ -114,6 +118,13 @@ class SpriteManager:
             try_again_text.get_height()
         )
         self.button_exit_rect.inflate_ip(margin, margin)
+
+    def load_dog(self):
+        x_mod, y_mod = 0.33, 0.33
+        dog_laugh_1_image = pygame.image.load("DuckHunt\\Images\\dog_laugh_1.png").convert_alpha()
+        self.dog_laugh_1_image = pygame.transform.scale(dog_laugh_1_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
+        dog_laugh_2_image = pygame.image.load("DuckHunt\\Images\\dog_laugh_2.png").convert_alpha()
+        self.dog_laugh_2_image = pygame.transform.scale(dog_laugh_2_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
 
     def load_all_ducks(self):
         def scale_image(image):
@@ -397,24 +408,30 @@ class SpriteManager:
 
     ####### game over scene logic
 
-    def animate_dog_laugh(self):
-        # просто вилазить з-під трави і сміється пів секунди
-        pass
+    def animate_dog_laugh(self, dog_x, dog_y):
+        if pygame.time.get_ticks() - self.dog_animation_timer > 300:  # Перемикати кадр кожні 300 мс
+            self.dog_animation_timer = pygame.time.get_ticks()
+            self.dog_frame = (self.dog_frame + 1) % 2  # Перемикати між 0 і 1
+        
+        dog_sprite = self.dog_laugh_1_image if self.dog_frame == 0 else self.dog_laugh_2_image
+        self.screen.blit(dog_sprite, (dog_x, dog_y))
 
     def draw_game_over(self, max_round, score, highest_score):
         width, height = self.screen.get_size()
+        panel_width = int(width * 0.5)
 
         # Небо
         self.screen.fill(self.sky_color)
 
         # Пес анімація
-
+        dog_x = ((width + panel_width) - self.dog_laugh_1_image.get_width()) // 2
+        dog_y = height * 0.5
+        self.animate_dog_laugh(dog_x, dog_y)
 
         # ЗЕмля
         self.screen.blit(self.ground_image, (0, height - self.ground_image.get_height()))
 
         # Панелька з результатами
-        panel_width = int(width * 0.5)
         pygame.draw.rect(self.screen, self.leaderboard_bg_color, (0, 0, panel_width, height))
 
         game_over_text = self.font_game_name.render("GAME OVER", True, self.font_main_color)
