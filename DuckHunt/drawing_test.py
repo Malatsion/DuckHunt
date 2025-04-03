@@ -15,6 +15,8 @@ in_main_menu = True
 in_transition = False
 in_game = False
 
+duck = {"color": "black", "status": "alive", "position": (150,600), "velocity": 5, "vector": (1,-1) }
+
 pygame.mouse.set_visible(False)
 
 running = True
@@ -41,17 +43,26 @@ while running:
     elif in_transition:
         sprite_manager.move_clouds()
         sprite_manager.move_camera_down()
-        sprite_manager.draw_game_scene()
+        sprite_manager.draw_game_scene(None, in_transition=True)
         sprite_manager.draw_clouds()
         if not sprite_manager.transition_active:
             in_transition = False
             in_game = True
     elif in_game:
-        sprite_manager.draw_game_scene()
+        def update_duck_position(duck):
+            x, y = duck["position"]
+            vx, vy = duck["vector"]
+            speed = duck["velocity"]
+            duck["position"] = (x + speed * vx, y + speed * vy)
+
+        update_duck_position(duck)
+        sprite_manager.draw_game_scene(duck)
+
         ammo = 1
         ducks = ["hit", "hit", "miss", "hit", "miss", "", "", "", "", ""]
         score = 150
         sprite_manager.draw_interface(ammo, ducks, score)
+
         sprite_manager.draw_new_round(4)
 
     

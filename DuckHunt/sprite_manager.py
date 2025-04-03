@@ -19,6 +19,9 @@ class SpriteManager:
         self.camera_y = 0
         self.ground_y = 0
 
+        self.duck_animation_timer = 0
+        self.duck_frame = 0
+
         # Завантаження ресурсів
         self.load_fonts() # Завантаження шрифтів
         self.load_clouds() # Завантаження зображень хмар
@@ -27,6 +30,7 @@ class SpriteManager:
         self.load_interface() # Завантаження інтерфейсу
         self.load_cursor() # Завантаження курсора
         self.load_buttons() # Завантаження кнопок
+        self.load_all_ducks() # Завантаження зображень качок
 
         # Створення початкового набору хмар
         self.init_clouds()
@@ -94,7 +98,6 @@ class SpriteManager:
 
     def load_buttons(self):
         try_again_text = self.font_game_over_panel.render("TRY AGAIN", True, self.font_main_color)
-        exit_text = self.font_game_over_panel.render("EXIT", True, self.font_main_color)
         self.button_try_again_rect = pygame.Rect(
             (self.screen.get_width() * 0.5 - try_again_text.get_width()) // 2,
             self.screen.get_height() * 0.56,
@@ -111,6 +114,42 @@ class SpriteManager:
             try_again_text.get_height()
         )
         self.button_exit_rect.inflate_ip(margin, margin)
+
+    def load_all_ducks(self):
+        def scale_image(image):
+            width, height = image.get_size()
+            return pygame.transform.scale(image, (width * 2, height * 2))
+
+        self.duck_sprites = {
+            "black": {
+                "fly": [
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_1.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_2.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_3.png")),
+                ],
+                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_shot.png")),
+                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fall_left.png")),
+            },
+            "red": {
+                "fly": [
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_1.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_2.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_3.png")),
+                ],
+                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_shot.png")),
+                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fall_right.png")),
+            },
+            "blue": {
+                "fly": [
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_1.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_2.png")),
+                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_3.png")),
+                ],
+                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_shot.png")),
+                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fall_left.png")),
+            },
+        }
+
 
     ####### main menu logic
     def init_clouds(self):
@@ -260,9 +299,11 @@ class SpriteManager:
                 self.transition_active = False
                 self.camera_y = self.screen.get_height()
 
-    def draw_game_scene(self):
+    def draw_game_scene(self, duck, in_transition = False):
         width, height = self.screen.get_size()
         self.screen.fill(self.sky_color)
+        if not (in_transition):
+            self.animate_duck(duck)
         self.screen.blit(self.ground_image, (0, height - self.ground_y), area=(0, 0, width, self.ground_y))
 
     ####### stupid shit nobody cares about
@@ -331,11 +372,28 @@ class SpriteManager:
         round_text = self.font_game_name.render(f"ROUND {round}", True, (255,255,255))
         self.screen.blit(round_text, ((width - round_text.get_width()) // 2, height * 0.1))
 
-    def animate_duck(self, velocity, vector):
-        # vector - напрям куди летить качка.
-        # velocity - швидкість качки
-        # має бути багато фреймів качки які будуть міняться залежно від напрямку і з часом
-        pass
+    def animate_duck(self, duck):
+        # Отримуємо параметри качки
+        color = duck["color"]  # "black", "red", "blue"
+        status = duck["status"]  # "alive", "shot", "falling"
+
+        # Обираємо потрібний набір спрайтів качки
+        frames = self.duck_sprites[color]  # {"fly": [...], "shot": [...], "falling": [...]}
+
+        if pygame.time.get_ticks() - self.duck_animation_timer > 150:  # Кожні 150 мс змінювати кадр
+            self.duck_animation_timer = pygame.time.get_ticks()
+            self.duck_frame = (self.duck_frame + 1) % 3  # Лише 3 кадри для польоту
+
+        # Вибір спрайту качки залежно від статусу
+        if status == "alive":
+            duck_sprite = frames["fly"][self.duck_frame]  # Летить (3 кадри)
+        elif status == "shot":
+            duck_sprite = frames["shot"]  # Підбита (1 кадр)
+        elif status == "falling":
+            duck_sprite = frames["falling"]  # Падає (1 кадр)
+
+        # Малюємо качку на екрані
+        self.screen.blit(duck_sprite, duck["position"])
 
     ####### game over scene logic
 
