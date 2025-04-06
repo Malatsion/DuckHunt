@@ -454,6 +454,29 @@ class SpriteManager:
         self.screen.blit(try_again_text, ((panel_width - try_again_text.get_width()) // 2, height * 0.56))
         self.screen.blit(exit_text, ((panel_width - exit_text.get_width()) // 2, height * 0.70))
 
+    def check_button_tryagain_click(self, mouse_pos):
+        """Перевіряє чи натиснули на кнопку спробувати ще раз"""
+        if self.button_try_again_rect.collidepoint(mouse_pos):
+            return True
+        return False
+    
+    def check_button_quit_click(self, mouse_pos):
+        """Перевіряє чи натиснули на кнопку вийти"""
+        if self.button_exit_rect.collidepoint(mouse_pos):
+            return True
+        return False
+    
+    
+    def check_duck_collision(self, duck, mouse_pos):
+        duck_x, duck_y = duck["position"]
+        mouse_x, mouse_y = mouse_pos
+
+        duck_width = self.white_duck_image.get_width()
+        duck_height = self.white_duck_image.get_height()
+
+        duck_rect = pygame.Rect(duck_x, duck_y, duck_width, duck_height)
+
+        return duck_rect.collidepoint(mouse_x, mouse_y)
 
 
     
