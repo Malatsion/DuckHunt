@@ -17,6 +17,7 @@ in_game = False
 
 duck = {"color": "black", "status": "alive", "position": (150,600), "velocity": 1, "vector": (1,-1) }
 
+# для зміни курсору на пса.
 pygame.mouse.set_visible(False)
 
 running = True
@@ -86,7 +87,7 @@ while running:
 
         sprite_manager.draw_new_round(4)
 
-    
+    # зміна курсору на пса.
     sprite_manager.draw_cursor()
     pygame.display.flip()
     clock.tick(30)
