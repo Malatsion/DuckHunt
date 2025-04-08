@@ -3,8 +3,7 @@ import math
 from typing import Tuple
 
 class Duck:
-    def __init__(self, color: str, position: Tuple[int, int], screen_width: int, screen_height: int):
-        self.color = color  # "black", "red", "blue"
+    def __init__(self, position: Tuple[int, int], screen_width: int, screen_height: int):
         self.position = list(position)
         self.screen_width = screen_width
         self.screen_height = screen_height
