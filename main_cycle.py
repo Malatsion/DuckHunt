@@ -4,6 +4,19 @@ from DuckHunt.sprite_manager import SpriteManager
 from datetime import datetime
 import random
 
+import argparse
+
+parser = argparse.ArgumentParser(description="Input parameters for Duck Hunt game")
+parser.add_argument('--nickname', type=str, required=True, help='Your nickname')
+parser.add_argument('--fast_ducks_mode', action='store_true', help='Enable fast ducks mode')
+parser.add_argument('--no_reload_mode', action='store_true', help='Enable no reload mode')
+
+args = parser.parse_args()
+# Використання аргументів - 
+# args.nickname :string
+# args.fast_ducks_mode :bool
+# args.no_reload_mode :bool
+
 # Ініціалізація Pygame
 pygame.init()
 
