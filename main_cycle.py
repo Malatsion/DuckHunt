@@ -53,13 +53,17 @@ is_falling = False  # Чи качка в стані падіння
 duck_colors = ["black", "red", "blue"]  # Доступні кольори качок
 base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)  # Базова швидкість для раунду
 
+
 # Ігрові об’єкти
-player = Player.Player(name="Player" + str(random.randint(1000, 9999)))  # Унікальне ім’я
+player = Player.Player(name=args.nickname)  # Унікальне ім’я
 duck = Duck.Duck((screen_width // 2, screen_height // 2), screen_width, screen_height)
 duck_color = random.choice(duck_colors)  # Випадковий колір качки
 duck.velocity = base_velocity  # Встановлюємо швидкість для першої качки
 dog = Dog.Dog(screen_width, screen_height)
 leaderboard = []  # Список лідерів: [(ім’я, рахунок), ...]
+
+sprite_width = sprite_manager.duck_sprites["black"]["shot"].get_width()  # Розмір спрайта качки
+sprite_height = sprite_width  # Розмір спрайта качки
 
 # Головний цикл гри
 running = True
@@ -104,6 +108,8 @@ while running:
                     else:
                         duck.register_shot_nearby()  # Реєструємо постріл поруч
                         ducks_status[duck_index] = "miss"
+                        # if ammo == 0:
+                        #     print(f"Ammo depleted, waiting for duck to escape: {duck.status}")
 
             elif current_state == STATE_GAME_OVER:
                 if sprite_manager.check_button_tryagain_click(mouse_pos):
@@ -155,11 +161,25 @@ while running:
     elif current_state == STATE_GAME:
         # Оновлення качки
         if not is_falling:
+            # Фіксуємо швидкість качки
+            if duck.velocity != base_velocity:
+                # print(f"Velocity corrected from {duck.velocity} to {base_velocity}")
+                duck.velocity = base_velocity
             duck.update(current_time)
-        elif current_time - fall_start_time < 500:
+            # Примусова перевірка виходу спрайта за межі екрана
+            if (duck.position[0] + sprite_width <= 0 or
+                    duck.position[0] >= screen_width or
+                    duck.position[1] + sprite_height <= 0 or
+                    duck.position[1] >= screen_height):
+                duck.status = "escaped"
+            #     print(f"Duck escaped at position: {duck.position}")
+            # print(f"Duck sprite bounds: [{duck.position[0]}, {duck.position[0] + sprite_width}, "
+            #       f"{duck.position[1]}, {duck.position[1] + sprite_height}], status: {duck.status}, ammo: {ammo}")
+        elif is_falling:
             duck.position[1] += duck.velocity * 2  # Рух вниз для анімації падіння
-        # Перевірка втечі, закінчення патронів або завершення падіння
-        if duck.status == "escaped" or ammo == 0 or (is_falling and current_time - fall_start_time >= 500):
+            # print(f"Falling duck position: {duck.position[1]}")  # Діагностика
+        # Перевірка втечі або завершення падіння
+        if duck.status == "escaped" or (is_falling and duck.position[1] >= screen_height):
             duck_index += 1
             if duck.status == "escaped":
                 ducks_status[duck_index - 1] = "miss"  # Позначити качку як пропущену
@@ -168,7 +188,7 @@ while running:
                     # Оновлення рекорду перед GAME_OVER
                     if player.max_points > highest_score:
                         # player.max_points = player.points
-                        highest_score = player.max_points
+                        highest_score = player.points
                         # print(f"New high score: {highest_score}")
                     current_state = STATE_GAME_OVER
                     max_round = current_round

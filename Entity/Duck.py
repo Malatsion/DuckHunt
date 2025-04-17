@@ -75,8 +75,8 @@ class Duck:
     def register_shot_nearby(self) -> None:
         """Реєструє постріл поруч"""
         self.shots_nearby += 1
-        if self.shots_nearby >= 2 and not self.bounce_mode:
-            self.activate_bounce_mode()
+        # if self.shots_nearby >= 2 and not self.bounce_mode:
+        #     self.activate_bounce_mode()
 
     def activate_bounce_mode(self) -> None:
         """Активує режим відскоків"""
