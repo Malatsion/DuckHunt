@@ -1,7 +1,8 @@
 import pygame
 from Entity import Duck, Dog, Player
 from DuckHunt.sprite_manager import SpriteManager
-from datetime import datetime
+from DuckHunt.level_manager import  LevelManager
+#from datetime import datetime
 import random
 
 import argparse
@@ -20,7 +21,7 @@ args = parser.parse_args()
 # Ініціалізація Pygame
 pygame.init()
 
-# Налаштування екрану
+# Налаштування екрана
 screen_info = pygame.display.Info()
 screen_width = screen_info.current_w
 screen_height = screen_info.current_h - 50
@@ -31,6 +32,7 @@ pygame.mouse.set_visible(False)
 # Ініціалізація менеджера спрайтів та годинника
 clock = pygame.time.Clock()
 sprite_manager = SpriteManager(screen)
+level_manager = LevelManager(args.fast_ducks_mode, args.no_reload_mode)
 
 # Стани гри
 STATE_MAIN_MENU = "main_menu"
@@ -40,7 +42,7 @@ STATE_GAME_OVER = "game_over"
 current_state = STATE_MAIN_MENU
 
 # Ігрові змінні
-current_round = 1
+#current_round = 1 #це не треба, бо є level_manager.get_level
 duck_index = 0  # Індекс поточної качки в раунді (0-9)
 ammo = 3  # Початкові патрони
 ducks_status = ["", "", "", "", "", "", "", "", "", ""]  # Статуси качок для інтерфейсу
@@ -51,7 +53,7 @@ shot_cooldown = 500  # 500 мс затримка
 fall_start_time = 0  # Час початку падіння качки
 is_falling = False  # Чи качка в стані падіння
 duck_colors = ["black", "red", "blue"]  # Доступні кольори качок
-base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)  # Базова швидкість для раунду
+base_velocity = random.uniform(3, 7) * level_manager.get_speed_multiplier() # Базова швидкість для раунду
 
 # Ігрові об’єкти
 player = Player.Player(name="Player" + str(random.randint(1000, 9999)))  # Унікальне ім’я
@@ -117,10 +119,10 @@ while running:
                     ammo = 3
                     ducks_status = ["", "", "", "", "", "", "", "", "", ""]
                     player.points = 0
-                    current_round = 1
+                    level_manager.reset()
+                    base_velocity = random.uniform(3, 7) * level_manager.get_speed_multiplier()
                     duck_index = 0
                     highest_score = player.max_points
-                    base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)
                     duck = Duck.Duck(
                         (screen_width // 2, screen_height // 2),
                         screen_width,
@@ -171,17 +173,17 @@ while running:
                         highest_score = player.max_points
                         # print(f"New high score: {highest_score}")
                     current_state = STATE_GAME_OVER
-                    max_round = current_round
+                    max_round = level_manager.get_level()
                     leaderboard.append((player.player_name, player.points))
                     leaderboard.sort(key=lambda x: x[1], reverse=True)
                     dog.start_laughing()
                 else:
                     # Новий раунд
-                    current_round += 1
+                    level_manager.next_level()
                     ammo = 3
                     duck_index = 0
                     ducks_status = ["", "", "", "", "", "", "", "", "", ""]
-                    base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)  # Нова швидкість для раунду
+                    base_velocity = random.uniform(3, 7) * level_manager.get_speed_multiplier()  # Нова швидкість для раунду
                     duck = Duck.Duck(
                         (screen_width // 2, screen_height // 2),
                         screen_width,
@@ -206,16 +208,16 @@ while running:
                 {"color": duck_color, "status": duck.status, "position": tuple(duck.position)}
             )
         sprite_manager.draw_interface(ammo, ducks_status, player.points)
-        sprite_manager.draw_new_round(current_round)
+        sprite_manager.draw_new_round(level_manager.get_level())
 
     elif current_state == STATE_GAME_OVER:
         dog.update(current_time)  # Оновлення анімації собаки
         sprite_manager.draw_game_over(max_round, player.points, highest_score)
 
-    # Промальовка курсору
+    # Промальовка курсора
     sprite_manager.draw_cursor()
 
-    # Оновлення екрану
+    # Оновлення екрана
     pygame.display.update()
     clock.tick(30)
 
