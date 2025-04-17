@@ -185,7 +185,7 @@ while running:
             duck_index += 1
             if duck.status == "escaped":
                 ducks_status[duck_index - 1] = "miss"  # Позначити качку як пропущену
-            if duck_index >= 10 or ammo == 0:
+            if duck_index >= 10 or (level_manager.check_no_reload_mode() and ammo == 0 and ducks_status[duck_index - 1] == "miss"):
                 if (not level_manager.check_no_reload_mode() and sum(1 for status in ducks_status if status == "miss") >= 4) or (level_manager.check_no_reload_mode() and duck.status == "escaped"):
                     # Оновлення рекорду перед GAME_OVER
                     if player.max_points > highest_score:
@@ -214,9 +214,9 @@ while running:
                     is_falling = False
             else:
                 # Нова качка в межах раунду
-                if level_manager.check_no_reload_mode() and ammo < 3:
+                if level_manager.check_no_reload_mode() and ammo < 3 and ducks_status[duck_index - 1] == "hit":
                     ammo += 1
-                else:
+                elif not level_manager.check_no_reload_mode():
                     ammo = 3
                 duck = Duck.Duck(
                     (screen_width // 2, screen_height // 2),
