@@ -51,8 +51,10 @@ shot_cooldown = 500  # 500 мс затримка
 fall_start_time = 0  # Час початку падіння качки
 is_falling = False  # Чи качка в стані падіння
 duck_colors = ["black", "red", "blue"]  # Доступні кольори качок
-base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)  # Базова швидкість для раунду
-
+if args.fast_ducks_mode:
+    base_velocity = random.uniform(7, 13) * (1 + 0.1 * current_round)
+else:
+    base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)
 
 # Ігрові об’єкти
 player = Player.Player(name=args.nickname)  # Унікальне ім’я
@@ -126,7 +128,10 @@ while running:
                     current_round = 1
                     duck_index = 0
                     highest_score = player.max_points
-                    base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)
+                    if args.fast_ducks_mode:
+                        base_velocity = random.uniform(7, 13) * (1 + 0.1 * current_round)
+                    else:
+                        base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)
                     duck = Duck.Duck(
                         (screen_width // 2, screen_height // 2),
                         screen_width,
@@ -201,7 +206,10 @@ while running:
                     ammo = 3
                     duck_index = 0
                     ducks_status = ["", "", "", "", "", "", "", "", "", ""]
-                    base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)  # Нова швидкість для раунду
+                    if args.fast_ducks_mode:
+                        base_velocity = random.uniform(7, 13) * (1 + 0.1 * current_round)
+                    else:
+                        base_velocity = random.uniform(3, 7) * (1 + 0.1 * current_round)
                     duck = Duck.Duck(
                         (screen_width // 2, screen_height // 2),
                         screen_width,
