@@ -8,7 +8,7 @@ import random
 import argparse
 
 parser = argparse.ArgumentParser(description="Input parameters for Duck Hunt game")
-parser.add_argument('--nickname', type=str, required=True, help='Your nickname')
+parser.add_argument('--nickname', type=str, required=False, help='Your nickname')
 parser.add_argument('--fast_ducks_mode', action='store_true', help='Enable fast ducks mode')
 parser.add_argument('--no_reload_mode', action='store_true', help='Enable no reload mode')
 
@@ -18,8 +18,14 @@ args = parser.parse_args()
 # args.fast_ducks_mode :bool
 # args.no_reload_mode :bool
 
+args.nickname = args.nickname if args.nickname else "Player"  # Якщо ім’я не вказано, використовуємо "Player"
+#args.no_reload_mode = True 
+#args.fast_ducks_mode = True
+
 # Ініціалізація Pygame
 pygame.init()
+
+pygame.mixer.init()
 
 # Налаштування екрана
 screen_info = pygame.display.Info()
@@ -34,6 +40,28 @@ clock = pygame.time.Clock()
 sprite_manager = SpriteManager(screen)
 level_manager = LevelManager(args.fast_ducks_mode, args.no_reload_mode)
 
+# Завантаження зображень
+sound_title = pygame.mixer.Sound("DuckHunt\Sounds\Title.mp3")
+sound_game_over = pygame.mixer.Sound("DuckHunt\Sounds\8 - Game Over.mp3")
+sound_gun_shot = pygame.mixer.Sound("DuckHunt\Sounds/10 - SFX Gun Shot.mp3")
+sound_duck_quack = pygame.mixer.Sound("DuckHunt\Sounds/13 - SFX Duck Quack.mp3")
+sound_duck_fall = pygame.mixer.Sound("DuckHunt\Sounds/14 - SFX Dead Duck Falls.mp3")
+sound_bg_ingame = pygame.mixer.Sound("DuckHunt\\Sounds\\bg_music.mp3")
+pygame.mixer.music.load("DuckHunt/Sounds/bg_music.mp3")
+pygame.mixer.music.set_volume(0.5)
+
+gunshot_channel = pygame.mixer.Channel(0) 
+duckquack_channel = pygame.mixer.Channel(1)  
+duck_fall_channel = pygame.mixer.Channel(2)  
+bg_music_channel = pygame.mixer.Channel(3)
+
+# Встановимо гучність (опціонально)
+sound_title.set_volume(0.2)
+sound_game_over.set_volume(0.2)
+sound_gun_shot.set_volume(0.2)
+sound_duck_quack.set_volume(0.8)
+sound_duck_fall.set_volume(0.3)
+sound_bg_ingame.set_volume(0.5)
 
 # Стани гри
 STATE_MAIN_MENU = "main_menu"
@@ -95,12 +123,15 @@ while running:
                 last_shot_time = current_time
                 if ammo > 0:
                     ammo -= 1
+                    gunshot_channel.play(sound_gun_shot)
                     duck_dict = {
                         "color": duck_color,
                         "status": duck.status,
                         "position": tuple(duck.position)
                     }
-                    if sprite_manager.check_duck_collision(duck_dict, mouse_pos):
+                    if sprite_manager.check_duck_collision(duck_dict, mouse_pos):   
+                        duckquack_channel.play(sound_duck_quack)
+                        duck_fall_channel.play(sound_duck_fall)
                         duck.unalive()  # Збиваємо качку
                         duck.status = "falling"  # Переходимо до падіння
                         is_falling = True
@@ -143,9 +174,11 @@ while running:
 
     # Оновлення стану гри
     if current_state == STATE_MAIN_MENU:
+        duck_fall_channel.play(sound_title)
         sprite_manager.move_clouds()
         sprite_manager.draw_start_screen()
         sprite_manager.draw_leaderboard(leaderboard)
+        
 
     elif current_state == STATE_TRANSITION:
         screen.fill((0, 0, 0))  # Очищаємо екран
@@ -161,6 +194,8 @@ while running:
             current_state = STATE_GAME
 
     elif current_state == STATE_GAME:
+        if not bg_music_channel.get_busy():
+            bg_music_channel.play(sound_bg_ingame)  # Відтворення фонової музики
         # Оновлення качки
         if not is_falling:
             # Фіксуємо швидкість качки
@@ -187,6 +222,7 @@ while running:
                 ducks_status[duck_index - 1] = "miss"  # Позначити качку як пропущену
             if duck_index >= 10 or ammo == 0:
                 if (not level_manager.check_no_reload_mode() and sum(1 for status in ducks_status if status == "miss") >= 4) or (level_manager.check_no_reload_mode() and duck.status == "escaped"):
+                    gunshot_channel.play(sound_game_over)
                     # Оновлення рекорду перед GAME_OVER
                     if player.max_points > highest_score:
                         # player.max_points = player.points
@@ -203,7 +239,7 @@ while running:
                     ammo = 3
                     duck_index = 0
                     ducks_status = ["", "", "", "", "", "", "", "", "", ""]
-                    base_velocity = random.uniform(3, 7) * level_manager.get_speed_multiplier()  # Нова швидкість для раунду
+                    base_velocity += random.uniform(3, 7) * level_manager.get_speed_multiplier()  # Нова швидкість для раунду
                     duck = Duck.Duck(
                         (screen_width // 2, screen_height // 2),
                         screen_width,
@@ -234,6 +270,7 @@ while running:
         sprite_manager.draw_new_round(level_manager.get_level())
 
     elif current_state == STATE_GAME_OVER:
+        #bg_music_channel.stop()  # Зупинка фонової музики
         dog.update(current_time)  # Оновлення анімації собаки
         sprite_manager.draw_game_over(max_round, player.points, highest_score)
 
