@@ -95,9 +95,9 @@ while running:
             elif current_state == STATE_GAME_OVER:
                 if sprite_manager.check_button_tryagain_click(mouse_pos):
                     # Скидання гри
+                    sprite_manager = SpriteManager(screen)  # Перестворюємо SpriteManager
+                    # print("SpriteManager recreated for TRY AGAIN")
                     screen.fill((0, 0, 0))  # Очищаємо екран
-                    for _ in range(10):  # Багаторазовий виклик для скидання хмар
-                        sprite_manager.move_clouds()
                     sprite_manager.draw_start_screen()  # Малюємо стартовий екран
                     pygame.display.update()  # Оновлюємо екран негайно
                     current_state = STATE_MAIN_MENU
@@ -128,8 +128,7 @@ while running:
 
     elif current_state == STATE_TRANSITION:
         screen.fill((0, 0, 0))  # Очищаємо екран
-        for _ in range(10):  # Багаторазовий виклик для скидання хмар
-            sprite_manager.move_clouds()
+        sprite_manager.move_clouds()
         sprite_manager.draw_start_screen()  # Встановлюємо фон
         sprite_manager.move_camera_down()
         sprite_manager.draw_game_scene(
@@ -153,6 +152,11 @@ while running:
                 ducks_status[duck_index - 1] = "miss"  # Позначити качку як пропущену
             if duck_index >= 10:
                 if sum(1 for status in ducks_status if status == "miss") >= 4:
+                    # Оновлення рекорду перед GAME_OVER
+                    if player.max_points > highest_score:
+                        # player.max_points = player.points
+                        highest_score = player.max_points
+                        # print(f"New high score: {highest_score}")
                     current_state = STATE_GAME_OVER
                     max_round = current_round
                     leaderboard.append((player.player_name, player.points))
@@ -200,7 +204,7 @@ while running:
 
     # Оновлення екрану
     pygame.display.update()
-    clock.tick(60)
+    clock.tick(30)
 
 # Завершення гри
 pygame.quit()
