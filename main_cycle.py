@@ -270,7 +270,7 @@ while running:
         sprite_manager.draw_new_round(level_manager.get_level())
 
     elif current_state == STATE_GAME_OVER:
-        #bg_music_channel.stop()  # Зупинка фонової музики
+        bg_music_channel.stop()  # Зупинка фонової музики
         dog.update(current_time)  # Оновлення анімації собаки
         sprite_manager.draw_game_over(max_round, player.points, highest_score)
 
