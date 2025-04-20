@@ -286,13 +286,13 @@ class SpriteManager:
             crown_x = self.leaderboard_x + panel_width * 0.013
             crown_y = height * 0.05
             self.screen.blit(self.crown_image, (crown_x, crown_y))
-    
+
     def toggle_leaderboard(self):
         """Вмикає або вимикає список лідерів.
         Цей метод викликати при натисканні клавіші TAB (увімкнення таблиці лідерів)
         Метод промальовування панелі виконувати завжди"""
         self.leaderboard_toggled = not self.leaderboard_toggled
-
+        
     ####### transition to game scene logic
     def start_transition(self):
         """Запускає анімацію спуску"""
