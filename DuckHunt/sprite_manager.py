@@ -42,44 +42,44 @@ class SpriteManager:
 
     ####### loading resources
     def load_fonts(self):
-        self.font_game_name = pygame.font.Font("DuckHunt\\Fonts\\m29.TTF", 72)
-        self.font_main = pygame.font.Font("DuckHunt\\Fonts\\m29.TTF", 24)
-        self.font_leaderboard = pygame.font.Font("DuckHunt\\Fonts\\m29.TTF", 20)
-        self.font_game_over_panel = pygame.font.Font("DuckHunt\\Fonts\\m29.TTF", 40)
+        self.font_game_name = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 72)
+        self.font_main = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 24)
+        self.font_leaderboard = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 20)
+        self.font_game_over_panel = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 40)
     
     def load_clouds(self):
-        self.cloud_images = [pygame.image.load(f"DuckHunt\\Images\\cloud_{i}_alpha.png").convert_alpha() for i in range(1, 8)]
+        self.cloud_images = [pygame.image.load(f".\\DuckHunt\\Images\\cloud_{i}_alpha.png").convert_alpha() for i in range(1, 8)]
     
     def load_crown(self):
-        self.crown_image = pygame.image.load("DuckHunt\\Images\\crown_2_alpha.png").convert_alpha()
+        self.crown_image = pygame.image.load(".\\DuckHunt\\Images\\crown_2_alpha.png").convert_alpha()
         width, height = self.screen.get_size()
         self.crown_image = pygame.transform.scale(self.crown_image, (int(width * 0.03), int(height * 0.05)))
 
     def load_game_scene(self):
-        self.ground_image = pygame.image.load("DuckHunt\\Images\\ground_dh_3_aplha.png").convert_alpha()
+        self.ground_image = pygame.image.load(".\\DuckHunt\\Images\\ground_dh_3_aplha.png").convert_alpha()
         self.ground_image = pygame.transform.scale(self.ground_image, (self.screen.get_width(), self.screen.get_width() * 0.2))
 
     def load_interface(self):
-        self.ammo_box = pygame.image.load("DuckHunt\\Images\\ammo.png").convert_alpha()
-        self.ducks_box = pygame.image.load("DuckHunt\\Images\\ducks.png").convert_alpha()
-        self.score_box = pygame.image.load("DuckHunt\\Images\\score.png").convert_alpha()
+        self.ammo_box = pygame.image.load(".\\DuckHunt\\Images\\ammo.png").convert_alpha()
+        self.ducks_box = pygame.image.load(".\\DuckHunt\\Images\\ducks.png").convert_alpha()
+        self.score_box = pygame.image.load(".\\DuckHunt\\Images\\score.png").convert_alpha()
         self.ammo_box = pygame.transform.scale(self.ammo_box, (int(self.screen.get_width() * 0.2), int(self.screen.get_height() * 0.1)))
         self.ducks_box = pygame.transform.scale(self.ducks_box, (int(self.screen.get_width() * 0.4), int(self.screen.get_height() * 0.1)))
         self.score_box = pygame.transform.scale(self.score_box, (int(self.screen.get_width() * 0.2), int(self.screen.get_height() * 0.1)))
         
-        self.bullet_image = pygame.image.load("DuckHunt\\Images\\bullet.png").convert_alpha()
+        self.bullet_image = pygame.image.load(".\\DuckHunt\\Images\\bullet.png").convert_alpha()
         self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.ammo_box.get_width() * 0.16), int(self.ammo_box.get_height() * 0.33)))
         
         duck_scale_x = int(self.ducks_box.get_width() * 0.06)
         duck_scale_y = int(self.ducks_box.get_height() * 0.43)
-        self.white_duck_image = pygame.image.load("DuckHunt\\Images\\white_duck.png").convert_alpha()
+        self.white_duck_image = pygame.image.load(".\\DuckHunt\\Images\\white_duck.png").convert_alpha()
         self.white_duck_image = pygame.transform.scale(self.white_duck_image, (duck_scale_x, duck_scale_y))
-        self.red_duck_image = pygame.image.load("DuckHunt\\Images\\red_duck.png").convert_alpha()
+        self.red_duck_image = pygame.image.load(".\\DuckHunt\\Images\\red_duck.png").convert_alpha()
         self.red_duck_image = pygame.transform.scale(self.red_duck_image, (duck_scale_x, duck_scale_y))
-        self.black_duck_image = pygame.image.load("DuckHunt\\Images\\black_duck.png").convert_alpha()
+        self.black_duck_image = pygame.image.load(".\\DuckHunt\\Images\\black_duck.png").convert_alpha()
         self.black_duck_image = pygame.transform.scale(self.black_duck_image, (duck_scale_x, duck_scale_y))
 
-        sprite_sheet = pygame.image.load("DuckHunt\\Images\\numbers_spritesheet.png")
+        sprite_sheet = pygame.image.load(".\\DuckHunt\\Images\\numbers_spritesheet.png")
         NUM_COLS = 5 
         NUM_ROWS = 2  
         SPRITE_WIDTH = sprite_sheet.get_width() // NUM_COLS 
@@ -96,7 +96,7 @@ class SpriteManager:
         self.digits_images = digits
 
     def load_cursor(self):
-        self.cursor_image = pygame.image.load("DuckHunt\\Images\\PES_cursor_alpha.png").convert_alpha()
+        self.cursor_image = pygame.image.load(".\\DuckHunt\\Images\\PES_cursor_alpha.png").convert_alpha()
         self.cursor_image = pygame.transform.scale(self.cursor_image, (self.cursor_image.get_width() * 0.75, self.cursor_image.get_height() * 0.75))
         self.cursor_image = pygame.transform.flip(self.cursor_image, True, False)
 
@@ -121,9 +121,9 @@ class SpriteManager:
 
     def load_dog(self):
         x_mod, y_mod = 0.33, 0.33
-        dog_laugh_1_image = pygame.image.load("DuckHunt\\Images\\dog_laugh_1.png").convert_alpha()
+        dog_laugh_1_image = pygame.image.load(".\\DuckHunt\\Images\\dog_laugh_1.png").convert_alpha()
         self.dog_laugh_1_image = pygame.transform.scale(dog_laugh_1_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
-        dog_laugh_2_image = pygame.image.load("DuckHunt\\Images\\dog_laugh_2.png").convert_alpha()
+        dog_laugh_2_image = pygame.image.load(".\\DuckHunt\\Images\\dog_laugh_2.png").convert_alpha()
         self.dog_laugh_2_image = pygame.transform.scale(dog_laugh_2_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
 
     def load_all_ducks(self):
@@ -134,30 +134,30 @@ class SpriteManager:
         self.duck_sprites = {
             "black": {
                 "fly": [
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_1.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_2.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fly_3.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_black_fly_1.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_black_fly_2.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_black_fly_3.png")),
                 ],
-                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_shot.png")),
-                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_black_fall_left.png")),
+                "shot": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_black_shot.png")),
+                "falling": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_black_fall_left.png")),
             },
             "red": {
                 "fly": [
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_1.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_2.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fly_3.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_red_fly_1.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_red_fly_2.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_red_fly_3.png")),
                 ],
-                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_shot.png")),
-                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_red_fall_right.png")),
+                "shot": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_red_shot.png")),
+                "falling": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_red_fall_right.png")),
             },
             "blue": {
                 "fly": [
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_1.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_2.png")),
-                    scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fly_3.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_fly_1.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_fly_2.png")),
+                    scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_fly_3.png")),
                 ],
-                "shot": scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_shot.png")),
-                "falling": scale_image(pygame.image.load("DuckHunt\\Images\\duck_blue_fall_left.png")),
+                "shot": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_shot.png")),
+                "falling": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_fall_left.png")),
             },
         }
 
@@ -165,7 +165,7 @@ class SpriteManager:
     ####### main menu logic
     def init_clouds(self):
         """Створення початкового набору хмар, розміщених по центру"""
-        cloud_1_image = pygame.image.load("DuckHunt\\Images\\cloud_2_alpha.png").convert_alpha()
+        cloud_1_image = pygame.image.load(".\\DuckHunt\\Images\\cloud_2_alpha.png").convert_alpha()
         cloud_1 = {
             "x": 800,
             "y": 500,
@@ -174,7 +174,7 @@ class SpriteManager:
         }
         self.clouds.append(cloud_1)
 
-        cloud_3_image = pygame.image.load("DuckHunt\\Images\\cloud_3_alpha.png").convert_alpha()
+        cloud_3_image = pygame.image.load(".\\DuckHunt\\Images\\cloud_3_alpha.png").convert_alpha()
         cloud_3 = {
             "x": 1100,
             "y": 50,
@@ -183,7 +183,7 @@ class SpriteManager:
         }
         self.clouds.append(cloud_3)
 
-        cloud_4_image = pygame.image.load("DuckHunt\\Images\\cloud_4_alpha.png").convert_alpha()
+        cloud_4_image = pygame.image.load(".\\DuckHunt\\Images\\cloud_4_alpha.png").convert_alpha()
         cloud_4 = {
             "x": 500,
             "y": 200,  # Нехай хмара починається згорі
@@ -192,7 +192,7 @@ class SpriteManager:
         }
         self.clouds.append(cloud_4)
 
-        cloud_8_image = pygame.image.load("DuckHunt\\Images\\cloud_8_alpha.png").convert_alpha()
+        cloud_8_image = pygame.image.load(".\\DuckHunt\\Images\\cloud_8_alpha.png").convert_alpha()
         cloud_8 = {
             "x": 25,
             "y": 25,
