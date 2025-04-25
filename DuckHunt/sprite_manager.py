@@ -1,41 +1,41 @@
 import pygame
 import random
 
+
 class SpriteManager:
     def __init__(self, screen):
-        self.screen = screen # Посилання на екран, передане з головного циклу
-  
+        self.screen = screen  # Посилання на екран, передане з головного циклу
+
         # Параметри для роботи з відображенням головного меню
-        self.leaderboard_toggled = False # Чи показувати список лідерів
+        self.leaderboard_toggled = False  # Чи показувати список лідерів
         self.leaderboard_x = -1500  # Початкове положення панелі
-        self.clouds = [] # Список хмаринок які існують на екрані
+        self.clouds = []  # Список хмаринок які існують на екрані
         self.max_clouds = 6
         self.font_main_color = (255, 255, 255)
-        self.leaderboard_bg_color = (50, 50, 50)    
-        self.sky_color = (15, 175, 255) # G - 135 for cloud bg
+        self.leaderboard_bg_color = (50, 50, 50)
+        self.sky_color = (15, 175, 255)  # G - 135 for cloud bg
 
         # Параметри для роботи з анімацією переходу в гру
         self.transition_active = False
         self.transition_speed = 10
         self.camera_y = 0
         self.ground_y = 0
-         # Параметри для роботи з анімаціями
+        # Параметри для роботи з анімаціями
         self.dog_animation_timer = 0
         self.dog_frame = 0
         self.duck_animation_timer = 0
         self.duck_frame = 0
 
         # Завантаження ресурсів
-        self.load_fonts() # Завантаження шрифтів
-        self.load_clouds() # Завантаження зображень хмар
-        self.load_crown() # Завантаження зображення корони
-        self.load_game_scene() # Завантаження зображення гри
-        self.load_interface() # Завантаження інтерфейсу
-        self.load_cursor() # Завантаження курсора
-        self.load_buttons() # Завантаження кнопок
-        self.load_dog() # Завантаження собаки
-        self.load_all_ducks() # Завантаження зображень качок
-
+        self.load_fonts()  # Завантаження шрифтів
+        self.load_clouds()  # Завантаження зображень хмар
+        self.load_crown()  # Завантаження зображення корони
+        self.load_game_scene()  # Завантаження зображення гри
+        self.load_interface()  # Завантаження інтерфейсу
+        self.load_cursor()  # Завантаження курсора
+        self.load_buttons()  # Завантаження кнопок
+        self.load_dog()  # Завантаження собаки
+        self.load_all_ducks()  # Завантаження зображень качок
 
         # Створення початкового набору хмар
         self.init_clouds()
@@ -46,10 +46,11 @@ class SpriteManager:
         self.font_main = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 24)
         self.font_leaderboard = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 20)
         self.font_game_over_panel = pygame.font.Font(".\\DuckHunt\\Fonts\\m29.TTF", 40)
-    
+
     def load_clouds(self):
-        self.cloud_images = [pygame.image.load(f".\\DuckHunt\\Images\\cloud_{i}_alpha.png").convert_alpha() for i in range(1, 8)]
-    
+        self.cloud_images = [pygame.image.load(f".\\DuckHunt\\Images\\cloud_{i}_alpha.png").convert_alpha() for i in
+                             range(1, 8)]
+
     def load_crown(self):
         self.crown_image = pygame.image.load(".\\DuckHunt\\Images\\crown_2_alpha.png").convert_alpha()
         width, height = self.screen.get_size()
@@ -57,19 +58,24 @@ class SpriteManager:
 
     def load_game_scene(self):
         self.ground_image = pygame.image.load(".\\DuckHunt\\Images\\ground_dh_3_aplha.png").convert_alpha()
-        self.ground_image = pygame.transform.scale(self.ground_image, (self.screen.get_width(), self.screen.get_width() * 0.2))
+        self.ground_image = pygame.transform.scale(self.ground_image,
+                                                   (self.screen.get_width(), self.screen.get_width() * 0.2))
 
     def load_interface(self):
         self.ammo_box = pygame.image.load(".\\DuckHunt\\Images\\ammo.png").convert_alpha()
         self.ducks_box = pygame.image.load(".\\DuckHunt\\Images\\ducks.png").convert_alpha()
         self.score_box = pygame.image.load(".\\DuckHunt\\Images\\score.png").convert_alpha()
-        self.ammo_box = pygame.transform.scale(self.ammo_box, (int(self.screen.get_width() * 0.2), int(self.screen.get_height() * 0.1)))
-        self.ducks_box = pygame.transform.scale(self.ducks_box, (int(self.screen.get_width() * 0.4), int(self.screen.get_height() * 0.1)))
-        self.score_box = pygame.transform.scale(self.score_box, (int(self.screen.get_width() * 0.2), int(self.screen.get_height() * 0.1)))
-        
+        self.ammo_box = pygame.transform.scale(self.ammo_box, (int(self.screen.get_width() * 0.2),
+                                                               int(self.screen.get_height() * 0.1)))
+        self.ducks_box = pygame.transform.scale(self.ducks_box, (int(self.screen.get_width() * 0.4),
+                                                                 int(self.screen.get_height() * 0.1)))
+        self.score_box = pygame.transform.scale(self.score_box, (int(self.screen.get_width() * 0.2),
+                                                                 int(self.screen.get_height() * 0.1)))
+
         self.bullet_image = pygame.image.load(".\\DuckHunt\\Images\\bullet.png").convert_alpha()
-        self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.ammo_box.get_width() * 0.16), int(self.ammo_box.get_height() * 0.33)))
-        
+        self.bullet_image = pygame.transform.scale(self.bullet_image, (int(self.ammo_box.get_width() * 0.16),
+                                                                       int(self.ammo_box.get_height() * 0.33)))
+
         duck_scale_x = int(self.ducks_box.get_width() * 0.06)
         duck_scale_y = int(self.ducks_box.get_height() * 0.43)
         self.white_duck_image = pygame.image.load(".\\DuckHunt\\Images\\white_duck.png").convert_alpha()
@@ -80,10 +86,10 @@ class SpriteManager:
         self.black_duck_image = pygame.transform.scale(self.black_duck_image, (duck_scale_x, duck_scale_y))
 
         sprite_sheet = pygame.image.load(".\\DuckHunt\\Images\\numbers_spritesheet.png")
-        NUM_COLS = 5 
-        NUM_ROWS = 2  
-        SPRITE_WIDTH = sprite_sheet.get_width() // NUM_COLS 
-        SPRITE_HEIGHT = sprite_sheet.get_height() // NUM_ROWS 
+        NUM_COLS = 5
+        NUM_ROWS = 2
+        SPRITE_WIDTH = sprite_sheet.get_width() // NUM_COLS
+        SPRITE_HEIGHT = sprite_sheet.get_height() // NUM_ROWS
 
         digits = []
         for row in range(NUM_ROWS):
@@ -91,13 +97,15 @@ class SpriteManager:
                 x = col * SPRITE_WIDTH
                 y = row * SPRITE_HEIGHT
                 digit = sprite_sheet.subsurface(pygame.Rect(x, y, SPRITE_WIDTH, SPRITE_HEIGHT))
-                digit = pygame.transform.scale(digit, (int(self.score_box.get_width() * 0.155), int(self.score_box.get_height() * 0.4)))
+                digit = pygame.transform.scale(digit, (int(self.score_box.get_width() * 0.155),
+                                                       int(self.score_box.get_height() * 0.4)))
                 digits.append(digit)
         self.digits_images = digits
 
     def load_cursor(self):
         self.cursor_image = pygame.image.load(".\\DuckHunt\\Images\\PES_cursor_alpha.png").convert_alpha()
-        self.cursor_image = pygame.transform.scale(self.cursor_image, (self.cursor_image.get_width() * 0.75, self.cursor_image.get_height() * 0.75))
+        self.cursor_image = pygame.transform.scale(self.cursor_image, (self.cursor_image.get_width() * 0.75,
+                                                                       self.cursor_image.get_height() * 0.75))
         self.cursor_image = pygame.transform.flip(self.cursor_image, True, False)
 
     def load_buttons(self):
@@ -105,7 +113,7 @@ class SpriteManager:
         self.button_try_again_rect = pygame.Rect(
             (self.screen.get_width() * 0.5 - try_again_text.get_width()) // 2,
             self.screen.get_height() * 0.56,
-            try_again_text.get_width(), 
+            try_again_text.get_width(),
             try_again_text.get_height()
         )
         margin = try_again_text.get_width() * 0.1
@@ -114,7 +122,7 @@ class SpriteManager:
         self.button_exit_rect = pygame.Rect(
             (self.screen.get_width() * 0.5 - try_again_text.get_width()) // 2,
             self.screen.get_height() * 0.70,
-            try_again_text.get_width(), 
+            try_again_text.get_width(),
             try_again_text.get_height()
         )
         self.button_exit_rect.inflate_ip(margin, margin)
@@ -122,9 +130,11 @@ class SpriteManager:
     def load_dog(self):
         x_mod, y_mod = 0.33, 0.33
         dog_laugh_1_image = pygame.image.load(".\\DuckHunt\\Images\\dog_laugh_1.png").convert_alpha()
-        self.dog_laugh_1_image = pygame.transform.scale(dog_laugh_1_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
+        self.dog_laugh_1_image = pygame.transform.scale(dog_laugh_1_image, (int(self.screen.get_width() * x_mod),
+                                                                            int(self.screen.get_height() * y_mod)))
         dog_laugh_2_image = pygame.image.load(".\\DuckHunt\\Images\\dog_laugh_2.png").convert_alpha()
-        self.dog_laugh_2_image = pygame.transform.scale(dog_laugh_2_image, (int(self.screen.get_width() * x_mod), int(self.screen.get_height() * y_mod)))
+        self.dog_laugh_2_image = pygame.transform.scale(dog_laugh_2_image, (int(self.screen.get_width() * x_mod),
+                                                                            int(self.screen.get_height() * y_mod)))
 
     def load_all_ducks(self):
         def scale_image(image):
@@ -160,7 +170,6 @@ class SpriteManager:
                 "falling": scale_image(pygame.image.load(".\\DuckHunt\\Images\\duck_blue_fall_left.png")),
             },
         }
-
 
     ####### main menu logic
     def init_clouds(self):
@@ -214,7 +223,7 @@ class SpriteManager:
             "image": pygame.transform.scale(cloud_image, (cloud_image.get_width(), cloud_image.get_height())),
         }
         self.clouds.append(cloud)
-    
+
     def move_clouds(self):
         """Оновлює положення хмар і додає нові за потреби"""
         for cloud in self.clouds:
@@ -231,10 +240,10 @@ class SpriteManager:
     def draw_start_screen(self):
         """Малює стартовий екран"""
         width, height = self.screen.get_size()
-        
+
         # Небо
         self.screen.fill(self.sky_color)
-        
+
         # Хмари
         self.draw_clouds()
 
@@ -244,10 +253,10 @@ class SpriteManager:
         leaderboard_text = self.font_main.render("Press TAB to show leaderboards", True, self.font_main_color)
 
         title_rect_margin = 10
-        title_rect =  (((width - title.get_width()) // 2) - title_rect_margin,
-                  height * 0.2 - title_rect_margin,
-                  title.get_width() + title_rect_margin * 2,
-                  title.get_height() + title_rect_margin * 2)
+        title_rect = (((width - title.get_width()) // 2) - title_rect_margin,
+                      height * 0.2 - title_rect_margin,
+                      title.get_width() + title_rect_margin * 2,
+                      title.get_height() + title_rect_margin * 2)
         pygame.draw.rect(self.screen, self.leaderboard_bg_color, title_rect)
         self.screen.blit(title, ((width - title.get_width()) // 2, height * 0.2 - self.camera_y))
 
@@ -263,9 +272,10 @@ class SpriteManager:
 
         # Плавна зміна положення панелі
         if self.leaderboard_toggled:
-            self.leaderboard_x = min(self.leaderboard_x + 10, 0) # 0 - кінцеве положення
+            self.leaderboard_x = min(self.leaderboard_x + 10, 0)  # 0 - кінцеве положення
         else:
-            self.leaderboard_x = max(self.leaderboard_x - 10, -panel_width) # -panel_width - кінцеве положення, щоб не було видно
+            self.leaderboard_x = max(self.leaderboard_x - 10,
+                                     -panel_width)  # -panel_width - кінцеве положення, щоб не було видно
 
         # Промальовуємо панель
         pygame.draw.rect(self.screen, self.leaderboard_bg_color, (self.leaderboard_x, 0, panel_width, height))
@@ -277,7 +287,7 @@ class SpriteManager:
         # Промальовуємо список лідерів
         top_scores = sorted(leaderboard, key=lambda x: x[1], reverse=True)[:10]
         for i in range(10):
-            text = f"{i+1} {top_scores[i][0]} - {top_scores[i][1]}" if i < len(top_scores) else f"{i+1} No record"
+            text = f"{i + 1} {top_scores[i][0]} - {top_scores[i][1]}" if i < len(top_scores) else f"{i + 1} No record"
             line = self.font_leaderboard.render(text, True, (200, 200, 200))
             self.screen.blit(line, (self.leaderboard_x + panel_width * 0.045, height * (0.1 + i * 0.05)))
 
@@ -292,7 +302,7 @@ class SpriteManager:
         Цей метод викликати при натисканні клавіші TAB (увімкнення таблиці лідерів)
         Метод промальовування панелі виконувати завжди"""
         self.leaderboard_toggled = not self.leaderboard_toggled
-        
+
     ####### transition to game scene logic
     def start_transition(self):
         """Запускає анімацію спуску"""
@@ -310,7 +320,7 @@ class SpriteManager:
                 self.transition_active = False
                 self.camera_y = self.screen.get_height()
 
-    def draw_game_scene(self, duck, in_transition = False):
+    def draw_game_scene(self, duck, in_transition=False):
         width, height = self.screen.get_size()
         self.screen.fill(self.sky_color)
         if not (in_transition):
@@ -323,9 +333,9 @@ class SpriteManager:
         self.screen.blit(self.cursor_image, pos)
 
     def get_digits(number, max_digits=6):
-        str_number = str(number).zfill(max_digits) # додаємо нулі зліва
+        str_number = str(number).zfill(max_digits)  # додаємо нулі зліва
         return [int(digit) for digit in str_number]
-    
+
     ####### game scene logic
     # draw_game_scene() from transitioning is used in game scene logic too
 
@@ -364,8 +374,6 @@ class SpriteManager:
             else:
                 self.screen.blit(self.white_duck_image, (ducks_first_x + ducks_x_skip, ducks_y))
             ducks_x_skip += self.white_duck_image.get_width() + self.white_duck_image.get_width() * 0.15
-        
-
 
         # Промальовуємо рахунок
         score_first_x = score_box_x + self.score_box.get_width() * 0.06
@@ -380,7 +388,7 @@ class SpriteManager:
 
     def draw_new_round(self, round):
         width, height = self.screen.get_size()
-        round_text = self.font_game_name.render(f"ROUND {round}", True, (255,255,255))
+        round_text = self.font_game_name.render(f"ROUND {round}", True, (255, 255, 255))
         self.screen.blit(round_text, ((width - round_text.get_width()) // 2, height * 0.1))
 
     def animate_duck(self, duck):
@@ -412,7 +420,7 @@ class SpriteManager:
         if pygame.time.get_ticks() - self.dog_animation_timer > 300:  # Перемикати кадр кожні 300 мс
             self.dog_animation_timer = pygame.time.get_ticks()
             self.dog_frame = (self.dog_frame + 1) % 2  # Перемикати між 0 і 1
-        
+
         dog_sprite = self.dog_laugh_1_image if self.dog_frame == 0 else self.dog_laugh_2_image
         self.screen.blit(dog_sprite, (dog_x, dog_y))
 
@@ -447,9 +455,9 @@ class SpriteManager:
 
         try_again_text = self.font_game_over_panel.render("TRY AGAIN", True, self.font_main_color)
         exit_text = self.font_game_over_panel.render("EXIT", True, self.font_main_color)
- 
-        pygame.draw.rect(self.screen, self.font_main_color, self.button_try_again_rect, width = 3, border_radius=10)
-        pygame.draw.rect(self.screen, self.font_main_color, self.button_exit_rect, width = 3, border_radius=10)
+
+        pygame.draw.rect(self.screen, self.font_main_color, self.button_try_again_rect, width=3, border_radius=10)
+        pygame.draw.rect(self.screen, self.font_main_color, self.button_exit_rect, width=3, border_radius=10)
 
         self.screen.blit(try_again_text, ((panel_width - try_again_text.get_width()) // 2, height * 0.56))
         self.screen.blit(exit_text, ((panel_width - exit_text.get_width()) // 2, height * 0.70))
@@ -459,14 +467,13 @@ class SpriteManager:
         if self.button_try_again_rect.collidepoint(mouse_pos):
             return True
         return False
-    
+
     def check_button_quit_click(self, mouse_pos):
         """Перевіряє чи натиснули на кнопку вийти"""
         if self.button_exit_rect.collidepoint(mouse_pos):
             return True
         return False
-    
-    
+
     def check_duck_collision(self, duck, mouse_pos):
         duck_x, duck_y = duck["position"]
         mouse_x, mouse_y = mouse_pos
@@ -479,5 +486,5 @@ class SpriteManager:
         return duck_rect.collidepoint(mouse_x, mouse_y)
 
 
-    
+
 
