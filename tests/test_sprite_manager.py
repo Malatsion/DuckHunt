@@ -1,7 +1,7 @@
 import pygame
 import pytest
 from unittest.mock import MagicMock, patch
-from DuckHunt.sprite_manager import SpriteManager  
+from ..DuckHunt.sprite_manager import SpriteManager
 
 @pytest.fixture
 def mock_screen():

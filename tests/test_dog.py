@@ -1,5 +1,5 @@
 import pytest
-from Entity.Dog import Dog
+from ..Entity.Dog import Dog
 import pygame
 
 

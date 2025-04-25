@@ -1,5 +1,5 @@
 import pytest
-from Entity.Player import Player
+from ..Entity.Player import Player
 
 
 @pytest.fixture

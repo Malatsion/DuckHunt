@@ -1,5 +1,5 @@
 import pytest
-from Entity.Duck import Duck
+from ..Entity.Duck import Duck
 
 @pytest.fixture
 def duck():
